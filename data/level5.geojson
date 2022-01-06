@@ -1,0 +1,20 @@
+var l5={
+"type": "FeatureCollection",
+"name": "level5",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "County": "Nakuru", "Hospital": "Nakuru Level 5 Hospital", "Latitude": -0.27688, "Longitude": 36.071494 }, "geometry": { "type": "Point", "coordinates": [ 36.071494, -0.27688 ] } },
+{ "type": "Feature", "properties": { "County": "Embu", "Hospital": "Embu Level 5 Hospital", "Latitude": -0.52367, "Longitude": 37.45265 }, "geometry": { "type": "Point", "coordinates": [ 37.45265, -0.52367 ] } },
+{ "type": "Feature", "properties": { "County": "Kiambu", "Hospital": "Thika Level 5 Hospital", "Latitude": -1.04186, "Longitude": 37.0787072 }, "geometry": { "type": "Point", "coordinates": [ 37.0787072, -1.04186 ] } },
+{ "type": "Feature", "properties": { "County": "Nyeri", "Hospital": "Othaya Level 5 hospital", "Latitude": -0.54287, "Longitude": 36.94193 }, "geometry": { "type": "Point", "coordinates": [ 36.94193, -0.54287 ] } },
+{ "type": "Feature", "properties": { "County": "Machakos", "Hospital": "Machakos Level 5 Hospital", "Latitude": -1.52298, "Longitude": 37.26634 }, "geometry": { "type": "Point", "coordinates": [ 37.26634, -1.52298 ] } },
+{ "type": "Feature", "properties": { "County": "Kakamega", "Hospital": "Kakamega Level 5 Hospital", "Latitude": 0.273616, "Longitude": 34.759521 }, "geometry": { "type": "Point", "coordinates": [ 34.759521, 0.273616 ] } },
+{ "type": "Feature", "properties": { "County": "Garissa", "Hospital": "Garissa Level 5 Hospital", "Latitude": -0.44887, "Longitude": 39.652474 }, "geometry": { "type": "Point", "coordinates": [ 39.652474, -0.44887 ] } },
+{ "type": "Feature", "properties": { "County": "Nyeri", "Hospital": "Nyeri Level 5 Hospital", "Latitude": -0.425942, "Longitude": 36.96359 }, "geometry": { "type": "Point", "coordinates": [ 36.96359, -0.425942 ] } },
+{ "type": "Feature", "properties": { "County": "Meru", "Hospital": "Meru Level 5 Hospital", "Latitude": 0.051046, "Longitude": 37.654164 }, "geometry": { "type": "Point", "coordinates": [ 37.654164, 0.051046 ] } },
+{ "type": "Feature", "properties": { "County": "Nairobi", "Hospital": "Mama Lucy Kibaki Hospital", "Latitude": -1.27411, "Longitude": 36.89898 }, "geometry": { "type": "Point", "coordinates": [ 36.89898, -1.27411 ] } },
+{ "type": "Feature", "properties": { "County": "Kisumu", "Hospital": "Jaramogi Oginga Odinga Teaching and Referral Hospital", "Latitude": -0.08911, "Longitude": 34.77168 }, "geometry": { "type": "Point", "coordinates": [ 34.77168, -0.08911 ] } },
+{ "type": "Feature", "properties": { "County": "Mombasa", "Hospital": "Coast General Hospital Level 5", "Latitude": -4.04887, "Longitude": 39.67419 }, "geometry": { "type": "Point", "coordinates": [ 39.67419, -4.04887 ] } },
+{ "type": "Feature", "properties": { "County": "Uasin Gishu", "Hospital": "Moi Teaching and Referral Hospital", "Latitude": 0.511616, "Longitude": 35.28065 }, "geometry": { "type": "Point", "coordinates": [ 35.28065, 0.511616 ] } }
+]
+}

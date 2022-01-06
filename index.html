@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"; charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Recorded Cancer Cases</title>
+
+	<!-- adding leaflet css and js files-->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+   			integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   			crossorigin=""/>
+	<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+   			integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+   			crossorigin=""></script>
+
+	<!-- add sub-county polygon -->
+	<script type="text/javascript" src="data/cases_by_subcounty.geojson"></script>
+	<script type="text/javascript" src="data/level5.geojson"></script>
+	<script type="text/javascript" src="data/level4.geojson"></script>
+
+
+
+	<script type="text/javascript">
+
+		function init() {
+			// set the centre and zoom level
+			var map = new L.map('mapid').setView([0.5, 36.819], 6);
+			// add basemaps from cartodb - darkmatter.
+			var CartoDB = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png', {
+				attribution: '&copy; GeopsyResearch, foloo; contributors: <a href="http://cartodb.com/attributions#basemaps">CartoDB</a>',
+				subdomains:'abcd',
+				minZoom:4,
+				maxZoom:15
+			}).addTo(map);
+			// add the second basemap from OSM
+	        var osm = L.tileLayer ('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+	           	attribution: '&copy; OSM',
+	            minZoom: 4,
+	            maxZoom: 15
+	        });
+
+
+// Functions to add Polygon counties
+// So first, we have define functions
+
+// get color depending on poverty value
+	function getColor(p) {
+		return p > 100 ? '#E31A1C' :
+				p > 50  ? '#FC4E2A' :
+				p > 10  ? '#FD8D3C' :
+				p > 5   ? '#FEB24C' :
+				p > 1   ? '#FED976' :
+				p < 1   ? '#A9A9A9':
+					   '#FFEDA0';
+	}
+
+	function style(feature) {
+		return {
+			weight: 0.8,
+			opacity: 1,
+			color: 'white',
+			dashArray: '1',
+			fillOpacity: 0.7,
+			interactive: true,
+			fillColor: getColor(feature.properties.CASES)
+		};
+	}
+
+	function highlightFeature(e) {
+		var layer = e.target;
+
+		layer.setStyle({
+			weight: 5,
+			color: '#666',
+			dashArray: '',
+			fillOpacity: 0.7
+		});
+
+		if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+			layer.bringToFront();
+		}
+
+		info.update(layer.feature.properties);
+	}
+
+
+	function resetHighlight(e) {
+		ct.resetStyle(e.target);
+		info.update();
+	}
+
+	function zoomToFeature(e) {
+		map.fitBounds(e.target.getBounds());
+	}
+
+	function onEachFeature(feature, layer) {
+		layer.on({
+			//mouseover: highlightFeature,
+			//mouseout: resetHighlight,
+			click: zoomToFeature
+		});
+	}
+//Specifying the legend
+var legend = L.control({position: 'topright'});
+
+	legend.onAdd = function (map) {
+
+		var div = L.DomUtil.create('div', 'info legend'),
+			grades = [0,1, 5, 10, 50, 100],
+			labels = ['<b>Cancer Cases</b>'],
+			from, to;
+			
+		for (var i = 0; i < grades.length; i++) {
+			from = grades[i];
+			to = grades[i + 1];
+
+			labels.push(
+				'<i style="background:' + getColor(from + 0) + '"></i> ' +
+				from + (to ? '&ndash;' + to : '+'));
+		}
+
+		div.innerHTML = labels.join('<br>');
+		return div;
+	};
+
+	legend.addTo(map);
+
+	var cancer = new L.geoJSON(cases, {style: style, onEachFeature: onEachFeature}).addTo(map);
+        //Add pop ups for the polygos
+		cancer.eachLayer(function (layer) {
+		layer.bindPopup('<b>'+' Constituency: '+'</b>'+layer.feature.properties.CONSTITUENCY+'<br />'
+		+'<b>'+ 'County: ' + '</b>'+layer.feature.properties.COUNTY_NAM+'<br />'
+		+'<b>'+ 'Cases: '+ '</b>'+layer.feature.properties.CASES+'<br />'
+		);
+	});
+	
+	//Adding level 5 hospitals
+	var level5 = new L.geoJSON(l5, {
+				pointToLayer: function(feature, latlng) {
+					var circle = L.circleMarker(latlng, {
+						color: 'white',
+						fillColor: 'blue',
+						fillOpacity: 0.7,
+						radius: 5,
+						weight:1,
+						opacity: 0.9
+					});
+
+					circle.bindPopup("<table><tr><td><b> Facility Type</td><td><b> Level5 </b></b></td></tr>\
+						<tr><td><b> County</b></td><td>"+feature.properties.County+"</td></tr>\
+						<tr><td><b> Hospital</b></td><td>"+feature.properties.Hospital+"</td></tr>");
+					return circle;
+				},
+
+	}).addTo(map);
+	
+	//Adding level 4 hospitals
+	var level4 = new L.geoJSON(l4, {
+				pointToLayer: function(feature, latlng) {
+					var circle = L.circleMarker(latlng, {
+						color: 'white',
+						fillColor: 'green',
+						fillOpacity: 0.7,
+						radius: 3,
+						weight:1,
+						opacity: 0.9
+					});
+
+					circle.bindPopup("<table><tr><td><b> Facility Type</td><td><b> Level4 </b></b></td></tr>\
+						<tr><td><b> County</b></td><td>"+feature.properties.COUNTY+"</td></tr>\
+						<tr><td><b> Constituency</b></td><td>"+feature.properties.CONSTITUENCY+"</td></tr>\
+						<tr><td><b> Hospital</b></td><td>"+feature.properties.F_NAME+"</td></tr>\
+						<tr><td><b> Agency</b></td><td>"+feature.properties.Agency+"</td></tr>");
+					return circle;
+				},
+
+	}).addTo(map);
+
+
+			// add a container to control the layers
+			L.control.layers({"CartoDB": CartoDB, "OpenStreetMap": osm}, { "Cancer Cases": cancer, "Level 5 facilities": level5, "Level 4 facilities": level4}, {position: 'topleft', collapsed: false}).addTo(map);
+		};
+
+
+
+	</script>
+
+	<style type="text/css">
+		table {
+			border: 1px solid black;
+			border-collapse: collapse;
+		}
+		td {
+			border: 1px solid black;
+		}
+
+		.legend {
+			padding: 6px 18px;
+			background-color: rgba(255,255,255,0.8);
+			box-shadow: 0 0 15px rgba(0,0,0,0.2);
+			border-radius: 5px;
+		}
+		.legend i {
+			width: 18px;
+			height: 18px;
+			float: left;
+			margin-right: 8px;
+			opacity: 0.7;
+		}
+		div.legend.leaflet-control br {
+			clear: both;
+		}
+	</style>
+	</head>
+<body onload="init()">
+	<!-- set the div element and style the map -->
+	<div id="mapid" style="height: 700px; width: 96%; padding: 20px"></div>
+	<table id="properties"></table>
+</body>
+</html>
